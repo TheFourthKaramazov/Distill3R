@@ -1,0 +1,30 @@
+name: distill3r
+channels:
+  - pytorch
+  - nvidia  
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Core system and ML framework - conda handles these best
+  - python=3.11
+  - pytorch>=2.1.0
+  - torchvision>=0.16.0
+  - torchaudio>=2.1.0
+  - pytorch-cuda=12.1
+  
+  # System-level scientific computing (conda resolves conflicts better)
+  - numpy>=1.24.0
+  - scipy>=1.10.0
+  - opencv>=4.8.0
+  - pillow>=9.5.0
+  
+  # Development and system utilities
+  - git
+  - git-lfs
+  - psutil>=5.9.0
+  - pip
+  
+  # Install Python packages via pip (including external repo dependencies)
+  - pip:
+    - -r requirements.txt

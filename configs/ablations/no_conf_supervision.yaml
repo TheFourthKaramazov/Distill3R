@@ -1,0 +1,80 @@
+# Ablation Study: No Confidence Supervision (gamma=0)
+# Training for 25 epochs (manually stopped) to avoid LR decay schedule changes
+# Tests if confidence supervision term is necessary for good performance
+
+# Model configuration - DUNE encoder with compressed decoder
+model:
+  img_size: 512           # Match teacher cache resolution
+  landscape_format: true      # Follow Fast3R's landscape design
+  encoder_type: "dune"    # Use DUNE encoder (384d, 12L, 6H, p14) - DEFAULT
+  patch_size: 14          # DUNE default (auto-set)
+  embed_dim: 384          # DUNE ViT-Small (auto-set)
+  encoder_depth: 12       # DUNE ViT-Small (auto-set)
+  encoder_heads: 6        # DUNE ViT-Small (auto-set)
+  decoder_depth: 6        # Compressed decoder
+  decoder_heads: 6        # Compressed decoder
+  max_views: 20          # All samples have exactly 20 consecutive temporal views
+  max_parallel_views_for_head: 20  # Process all 20 views at once
+  landscape_only: true         # Match Fast3R landscape format
+  load_pretrained: true        # Load DUNE pretrained weights
+
+loss:
+  alpha_g: 2.0           # Global coordinate loss weight
+  alpha_l: 1.0           # Local coordinate loss weight
+  gamma: 0.0             # ABLATION: Disable confidence supervision
+  loss_type: 'default'   # Use standard loss with confidence weighting
+
+# Training configuration - 2-GPU with balanced loss
+training:
+  max_epochs: 1000       # Keep high to avoid LR decay - will manually stop at 25
+  batch_size: 4          # Per-GPU batch size
+  num_gpus: 2            # 2x RTX 6000 Ada for DDP
+  learning_rate: 1e-4
+  weight_decay: 0.01
+  warmup_steps: 3500     # 1 full epoch warmup (standard practice)
+  min_lr: 5e-5           # 10x higher than Fast3R (better for distillation)
+  max_grad_norm: 1.0
+  accumulate_grad_batches: 2  # Effective batch = 4 x 2 x 2 = 16
+  val_check_interval: null    # Disable validation
+  log_every_n_steps: 50  # Log every 50 steps
+  early_stop_patience: null   # Train until manually stopped
+  precision: "bf16-mixed"     # Mixed precision for 2x memory savings
+
+# Data configuration - Local paths
+data:
+  cache_dir: 'caches/teacher_cache'
+  num_workers: 8   # Conservative (4 per GPU) to avoid file descriptor limits
+  num_workers_val: 1
+  pin_memory: true  # Faster CPU->GPU transfers
+  persistent_workers: true   # Keep workers alive across epochs
+  prefetch_factor: 1   # Works best with multiple workers
+
+# Memory management and monitoring
+memory:
+  memory_cleanup_freq: 10    # Clean memory every 10 steps
+  log_memory_usage: true
+  max_memory_gb: 45  # RTX 6000 Ada has 49GB, use 45GB max per GPU
+  gpu_memory_threshold: 95.0
+
+# Monitoring configuration
+monitoring:
+  monitor_confidence: true   # Enable confidence monitoring
+
+# Checkpointing and monitoring
+checkpointing:
+  save_every_n_epochs: 10    # Save every 10 epochs
+  save_top_k: 5              # Keep top 5 checkpoints
+  monitor: 'train/total_loss'
+  mode: 'min'
+
+# Logging configuration
+logging:
+  use_wandb: false
+  log_dir: 'logs/ablations/no_conf_supervision'
+  experiment_name: 'ablation_no_conf_supervision'
+
+# Output directory
+output_dir: 'checkpoints/ablations/no_conf_supervision'
+
+# Reproducibility
+seed: 42

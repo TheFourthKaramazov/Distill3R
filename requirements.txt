@@ -1,0 +1,48 @@
+# ---------- Distill3R Dependencies ----------
+# Pull in dependencies from external repositories
+-r external/fast3r/requirements.txt
+-r external/vggt/requirements.txt
+
+# Note: lightning-bolts (from Fast3R) requires old pytorch-lightning==1.9.5
+# We use lightning>=2.5.0 with import lightning.pytorch for gradient clipping fix
+# Both packages can coexist as they use different import paths
+
+# Knowledge distillation specific packages
+transformers>=4.40            # Transformer models and tokenizers  
+accelerate>=0.29              # Distributed training utilities
+
+# Evaluation and visualization
+matplotlib>=3.5.0             # Plotting (eval.py)
+scikit-learn>=1.0.0           # Metrics and evaluation (eval.py)
+fvcore>=0.1.5                 # FLOPs computation and model analysis
+
+# System monitoring and utilities
+psutil>=5.9.0                 # System monitoring (memory tracking)
+nvidia-ml-py>=11.525.0        # GPU memory monitoring (pynvml)
+tqdm>=4.64                    # Progress bars
+
+# Configuration and data handling
+PyYAML>=6.0                   # YAML configuration files
+pandas>=1.3.0                 # Data manipulation and manifest handling
+
+# External services and data
+boto3>=1.26                   # AWS services (data downloads)
+requests>=2.28                # HTTP requests
+kaggle>=1.5.12                # Kaggle API (dataset downloads)
+
+# Note: Development dependencies moved to requirements-dev.txt
+
+
+# 3) Optional speed‑ups and advanced features
+# NOTE: Flash Attention is built into PyTorch 2.0+ via torch.nn.functional.scaled_dot_product_attention
+#       No additional packages needed! The model uses this automatically when attn_implementation="flash_attention"
+#flash-attn>=2.6              # Standalone flash attention (not needed with PyTorch 2.0+)
+#xformers>=0.0.25             # Memory-efficient transformers (alternative to Flash Attention)
+#ipykernel>=6.29.0            # Jupyter notebook support
+
+# NOTE: Install the matching PyTorch/CUDA wheel separately
+# For NVIDIA driver 535.x (CUDA 12.2) - RECOMMENDED for RTX 4090 stability:
+#   pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+#
+# For NVIDIA driver 570+ (CUDA 12.4+) - May experience "Ada launch-leak" freezes on RTX 4090:
+#   pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124

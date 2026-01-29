@@ -1,0 +1,68 @@
+# Data Paths Configuration for Distill3r - Full Dataset Run
+# Points to actual data locations in dataset/ directory
+
+# Preprocessing configuration
+prep:
+  resize_max: 960                      # Maximum edge size after scaling
+  out_dir: processed_data/images       # Where to write processed PNGs and manifest
+
+# Dataset configurations
+datasets:
+  # CO3D Single Sequence Dataset - Filtered complete sequences
+  - name: "CO3D_single"
+    root: "dataset/co3d_single_sequence"   # Filtered subset with complete sequences
+    pattern: "**/images/*.jpg"
+    sample_frac: 1.0     # Use all (tiny dataset: 1.5GB, ~13K images)
+    split: "train"
+
+  # CO3D Full Dataset - Object-centric multi-view scenes
+  # Using uniformly sampled 80GB subset (3,616 sequences from 17 categories)
+  - name: "CO3D"
+    root: "dataset/co3d"   # Uniformly sampled 80GB subset
+    pattern: "**/images/*.jpg"
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
+
+  # ARKitScenes Dataset - 50 VGA scenes downloaded
+  # Path structure: dataset/arkitscenes/raw/Training/{scene_id}/vga_wide/*.png
+  - name: "ARKitScenes"
+    root: "dataset/arkitscenes/raw/Training"
+    pattern: "*/vga_wide/*.png"   # VGA resolution RGB images
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
+
+  # MegaDepth Dataset - Outdoor reconstructions
+  # Path structure: dataset/megadepth/{scene_id}/dense*/imgs/*.jpg
+  - name: "MegaDepth"
+    root: "dataset/megadepth"
+    pattern: "*/dense*/imgs/*.jpg"
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
+
+  # BlendedMVS Dataset - Synthetic scenes
+  # Path structure: dataset/blendedmvs/{scene_id}/blended_images/*.jpg
+  - name: "BlendedMVS"
+    root: "dataset/blendedmvs"
+    pattern: "*/blended_images/*.jpg"
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
+
+  # Habitat Dataset - 25 Matterport3D scenes
+  # Path structure: dataset/habitat/{scene_id}/matterport_color_images/*.jpg
+  # NOTE: _extract_scene_id will use fallback, producing Habitat_matterport_color_images
+  # TODO: Update datasets.py to handle Habitat scene extraction properly
+  - name: "Habitat"
+    root: "dataset/habitat"
+    pattern: "*/matterport_color_images/*.jpg"
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
+
+  # ScanNet++ Dataset - DSLR captures
+  # Path structure: dataset/scannetpp/{scene_id}/dslr/resized_images/*.JPG
+  # NOTE: _extract_scene_id will use fallback, producing ScanNetPP_resized_images
+  # TODO: Update datasets.py to handle ScanNet++ scene extraction properly
+  - name: "ScanNetPP"
+    root: "dataset/scannetpp"
+    pattern: "*/dslr/resized_images/*.JPG"  # Note uppercase .JPG
+    sample_frac: 0.4     # 40% sampling for efficiency
+    split: "train"
