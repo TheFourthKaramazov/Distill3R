@@ -1,5 +1,5 @@
 <div align="center">
-<h1>Distill3R: An Exploratory Pipeline for Democratizing 3D Foundation Models on Commodity Hardware</h1>
+<h1>Distill3R: A Pipeline for Democratizing 3D Foundation Models on Commodity Hardware</h1>
 
 [**Brandon Leblanc**](mailto:brandon.leblanc@mail.concordia.ca) · [**Charalambos Poullis**](https://www.theictlab.org/)
 
@@ -275,7 +275,7 @@ If you find this work useful, please consider citing:
 
 ```bibtex
 @article{leblanc2025distill3r,
-    title={{Distill3R}: An Exploratory Pipeline for Democratizing {3D} Foundation Models on Commodity Hardware},
+    title={{Distill3R}: A Pipeline for Democratizing {3D} Foundation Models on Commodity Hardware},
     author={Leblanc, Brandon and Poullis, Charalambos},
     journal={arXiv preprint arXiv:2602.00865},
     year={2025},
