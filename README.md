@@ -5,7 +5,9 @@
 
 Immersive and Creative Technologies Lab, Concordia University
 
-[[ArXiv](TODO)] · [[Citation](#citation)]
+[[ArXiv](https://arxiv.org/abs/2602.00865)] · [[Citation](#citation)]
+
+<img src="assets/apple.png" alt="Example Reconstruction" width="600">
 
 </div>
 
@@ -44,11 +46,11 @@ Our 72M-parameter student achieves:
 - **5x inference speedup** at 128 views
 - **Full training in under 3 days** on a single workstation with 2x RTX 6000 Ada GPUs
 
-This work is not intended to compete with state-of-the-art foundation models, but to provide an accessible research baseline for laboratories without access to large-scale compute. Additionally, this pipeline enables practitioners to fine-tune and specialize the model on their own domain-specific data at minimal cost.
+This work is not intended to compete with state-of-the-art foundation models, but to provide an accessible research baseline for laboratories without access to large-scale compute. Additionally, this pipeline enables practitioners to train and specialize the model on their own domain-specific data at minimal cost.
 
 # Model Overview
 
-![Distill3R Pipeline](TODO)
+![Distill3R Training Pipeline](assets/training_pipeline.png)
 
 **Architecture:**
 - **Encoder**: [DUNE](https://github.com/naver/dune) ViT-Small (21M parameters) with weights shared across all N views
@@ -66,7 +68,7 @@ This work is not intended to compete with state-of-the-art foundation models, bu
 | Model | Parameters | Checkpoint |
 |-------|------------|------------|
 | Fast3R (Teacher) | 650M | [Official](https://github.com/facebookresearch/fast3r) |
-| Distill3R (Ours) | 72M | [coming soon](comping soon) |
+| Distill3R (Ours) | 72M | [Download](https://drive.google.com/file/d/1_LKdpyBZGWN43y2VCLrWwPLxtmj2mnk-/view?usp=sharing) |
 
 ## Inference Efficiency
 
@@ -79,13 +81,7 @@ System efficiency comparison on RTX 6000 Ada. All methods except Fast3R evaluate
 | VGGT | 0.59 | 15.28 | 2.28 | 33.98 | 6.40 | 38.41 | OOM | OOM | OOM | OOM |
 | **Distill3R (Ours)** | **0.13** | **4.05** | **0.41** | **9.97** | **1.02** | 21.80 | **1.78** | **28.69** | **2.69** | **31.90** |
 
-*OOM = Out of Memory. Bold indicates best results.*
 
-To load a pre-trained model:
-```python
-from distill3r.student.model import CompressedFast3R
-
-model = CompressedFast3R.from_pretrained("path/to/checkpoint.ckpt")
 ```
 
 # Installation
@@ -171,6 +167,8 @@ python utils/generate_manifest.py
 
 ## Teacher Cache Generation
 
+![Teacher Cache Pipeline](assets/teacher_cache.png)
+
 Generate supervision signals from Fast3R teacher:
 
 ```bash
@@ -213,7 +211,7 @@ python distill3r/train.py --config configs/distill3r.yaml
 **Key Configuration** (`configs/distill3r.yaml`):
 ```yaml
 model:
-  encoder_type: "dune"           # or "dinov3"
+  encoder_type: "dune"        
 
 training:
   num_gpus: 2
@@ -281,7 +279,7 @@ If you find this work useful, please consider citing:
 @article{leblanc2025distill3r,
     title={{Distill3R}: An Exploratory Pipeline for Democratizing {3D} Foundation Models on Commodity Hardware},
     author={Leblanc, Brandon and Poullis, Charalambos},
-    journal={arXiv preprint arXiv:XXXX.XXXXX},
+    journal={arXiv preprint arXiv:2602.00865},
     year={2025},
 }
 ```
