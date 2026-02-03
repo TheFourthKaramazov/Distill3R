@@ -80,7 +80,7 @@ System efficiency comparison on RTX 6000 Ada. All methods except Fast3R evaluate
 | **Distill3R (Ours)** | **0.13** | **4.05** | **0.41** | **9.97** | **1.02** | 21.80 | **1.78** | **28.69** | **2.69** | **31.90** |
 
 
-```
+
 
 # Installation
 
