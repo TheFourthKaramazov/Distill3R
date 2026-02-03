@@ -7,8 +7,6 @@ Immersive and Creative Technologies Lab, Concordia University
 
 [[ArXiv](https://arxiv.org/abs/2602.00865)] · [[Citation](#citation)]
 
-<img src="assets/apple.png" alt="Example Reconstruction" width="600">
-
 </div>
 
 <!-- omit in toc -->
