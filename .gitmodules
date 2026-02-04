@@ -1,6 +1,11 @@
 [submodule "external/fast3r"]
 	path = external/fast3r
 	url = https://github.com/facebookresearch/fast3r.git
+
 [submodule "external/dune"]
 	path = external/dune
 	url = https://github.com/naver/dune.git
+
+[submodule "external/vggt"]
+	path = external/vggt
+	url = https://github.com/facebookresearch/vggt.git
