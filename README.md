@@ -5,7 +5,9 @@
 
 Immersive and Creative Technologies Lab, Concordia University
 
-[[ArXiv](https://arxiv.org/abs/2602.00865)] · [[Citation](#citation)]
+**Accepted at the 23rd Conference on Robots and Vision (CRV 2026), Vancouver, Canada**
+
+[[ArXiv](https://arxiv.org/abs/2602.00865)] · [[Proceedings](https://crv.pubpub.org/2026)] · [[Citation](#citation)]
 
 </div>
 
@@ -14,11 +16,11 @@ Immersive and Creative Technologies Lab, Concordia University
 
 - [Summary](#summary)
 - [Model Overview](#model-overview)
-- [Pre-trained Models](#pre-trained-models)
+- [Model Comparison](#model-comparison)
 - [Installation](#installation)
   - [Conda Environment](#conda-environment)
   - [External Dependencies](#external-dependencies)
-  - [Pre-trained Weights](#pre-trained-weights)
+  - [Pre-trained Dependencies](#pre-trained-dependencies)
 - [Training Pipeline](#training-pipeline)
   - [Datasets](#datasets)
   - [Manifest Generation](#manifest-generation)
@@ -46,6 +48,8 @@ Our 72M-parameter student achieves:
 
 This work is not intended to compete with state-of-the-art foundation models, but to provide an accessible research baseline for laboratories without access to large-scale compute. Additionally, this pipeline enables practitioners to train and specialize the model on their own domain-specific data at minimal cost.
 
+> **Reproducibility:** This repository does not distribute a pre-trained Distill3R checkpoint. The full pipeline — teacher caching, student training, and inference — is provided so the model can be reproduced from scratch on a single workstation. Follow the [Training Pipeline](#training-pipeline) to produce your own checkpoint.
+
 # Model Overview
 
 ![Distill3R Training Pipeline](assets/training_pipeline.png)
@@ -61,12 +65,12 @@ This work is not intended to compete with state-of-the-art foundation models, bu
 3. Outputs are compressed (float16 + RLE encoding) and cached to disk
 4. Student trains on cached supervision without requiring teacher inference
 
-# Pre-trained Models
+# Model Comparison
 
-| Model | Parameters | Checkpoint |
-|-------|------------|------------|
-| Fast3R (Teacher) | 650M | [Official](https://github.com/facebookresearch/fast3r) |
-| Distill3R (Ours) | 72M | [Download](https://drive.google.com/file/d/1_LKdpyBZGWN43y2VCLrWwPLxtmj2mnk-/view?usp=sharing) |
+| Model | Parameters | Role |
+|-------|------------|------|
+| [Fast3R](https://github.com/facebookresearch/fast3r) | 650M | Teacher (external dependency) |
+| **Distill3R (Ours)** | **72M** | Student — train via the [pipeline](#training-pipeline) |
 
 ## Inference Efficiency
 
@@ -78,9 +82,6 @@ System efficiency comparison on RTX 6000 Ada. All methods except Fast3R evaluate
 | Fast3R (Teacher) | 0.32 | 6.86 | 1.14 | 12.11 | 3.26 | 21.11 | 6.35 | 32.36 | 10.11 | 44.36 |
 | VGGT | 0.59 | 15.28 | 2.28 | 33.98 | 6.40 | 38.41 | OOM | OOM | OOM | OOM |
 | **Distill3R (Ours)** | **0.13** | **4.05** | **0.41** | **9.97** | **1.02** | 21.80 | **1.78** | **28.69** | **2.69** | **31.90** |
-
-
-
 
 # Installation
 
@@ -115,8 +116,9 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 pip install lightning timm einops omegaconf pynvml psutil tqdm pillow opencv-python matplotlib
 ```
 
+## Pre-trained Dependencies
 
-## Pre-trained Weights
+These are the **external** weights required to run the pipeline. They are dependencies of the teacher and encoder, not a released Distill3R model.
 
 **DUNE Encoder** (required for training):
 ```bash
@@ -232,6 +234,8 @@ L_local:  Confidence-weighted L2 on local 3D coordinates (per-view normalized)
 L_conf:   L1 on confidence maps
 ```
 
+Training writes the student weights to your run's output directory; that is the checkpoint you pass to the inference script below.
+
 **Monitor Training**:
 ```bash
 tensorboard --logdir logs/
@@ -243,11 +247,11 @@ Evaluation code coming soon.
 
 # Inference
 
-Run inference on a directory of images to generate a colored 3D point cloud:
+Run inference on a directory of images using a checkpoint you produced from the [Training Pipeline](#training-pipeline) to generate a colored 3D point cloud:
 
 ```bash
 python utils/test_checkpoint_images.py path/to/images/ \
-    --checkpoint checkpoints/distill3r/last.ckpt \
+    --checkpoint path/to/your_trained_checkpoint.ckpt \
     --output-dir results/
 ```
 
@@ -260,7 +264,7 @@ python utils/test_checkpoint_images.py path/to/images/ \
 ```bash
 # Run inference on sample images
 python utils/test_checkpoint_images.py samples/apple/ \
-    --checkpoint checkpoints/distill3r/last.ckpt \
+    --checkpoint path/to/your_trained_checkpoint.ckpt \
     --output-dir results/apple_reconstruction \
     --conf-percentile 15
 ```
@@ -271,14 +275,15 @@ python utils/test_checkpoint_images.py samples/apple/ \
 
 # Citation
 
-If you find this work useful, please consider citing:
+If you find this work useful, please consider citing the published version:
 
 ```bibtex
-@article{leblanc2025distill3r,
-    title={{Distill3R}: A Pipeline for Democratizing {3D} Foundation Models on Commodity Hardware},
-    author={Leblanc, Brandon and Poullis, Charalambos},
-    journal={arXiv preprint arXiv:2602.00865},
-    year={2025},
+@inproceedings{leblanc2026distill3r,
+    title     = {{Distill3R}: A Pipeline for Democratizing {3D} Foundation Models on Commodity Hardware},
+    author    = {Leblanc, Brandon and Poullis, Charalambos},
+    booktitle = {Proceedings of the 23rd Conference on Robots and Vision (CRV)},
+    year      = {2026},
+    doi       = {10.21428/d82e957c.68efb4ef},
 }
 ```
 
